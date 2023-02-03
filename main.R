@@ -89,6 +89,45 @@ envelope.bn <- function(fit.model){
   par(new=T)
   qqnorm(med,axes=F,xlab="", ylab="", type="l",ylim=faixa,lty=2)
 }
+diagnostico.bn <- function(fit.model){
+  X <- model.matrix(fit.model)
+  n <- nrow(X)
+  p <- ncol(X)
+  fi <- fit.model$theta
+  w <- fi*fitted(fit.model)/(fi + fitted(fit.model))
+  W <- diag(w)
+  H <- solve(t(X)%*%W%*%X)
+  H <- sqrt(W)%*%X%*%H%*%t(X)%*%sqrt(W)
+  h <- diag(H)
+  ts <- resid(fit.model,type="pearson")/sqrt(1-h)
+  td <- resid(fit.model,type="deviance")/sqrt(1-h)
+  di <- (h/(1-h))*(ts^2)
+  par(mfrow=c(2,2))
+  a <- max(td)
+  b <- min(td)
+  plot(fitted(fit.model),h,xlab="Valores Ajustados", ylab="Medida h",
+       pch=16)
+  identify(fitted(fit.model), h, n=5)
+  title(sub="(a)")
+  #
+  plot(di,xlab="Indice", ylab="Distancia de Cook", pch=16)
+  identify(di,n=3)
+  title(sub="(b)")
+  #
+  plot(td,xlab="Indice", ylab="Residuo Componente do Desvio",
+       ylim=c(b-1,a+1), pch=16)
+  abline(2,0,lty=2)
+  abline(-2,0,lty=2)
+  identify(td,n=1)
+  title(sub="(c)")
+  #
+  eta = predict(fit.model)
+  z = eta + resid(fit.model, type="pearson")/sqrt(w)
+  plot(predict(fit.model),z,xlab="Preditor Linear",
+       ylab="Variavel z", pch=16)
+  lines(smooth.spline(predict(fit.model), z, df=2))
+  title(sub="(d)")
+}
 
 ########## IMPORTACAO E PACOTES ##############
 
@@ -104,6 +143,7 @@ pot <- read.csv('dados/Portuguese.csv')
 mat |> summary()
 mat |> colnames()
 mat[,mat |> sapply(is.character) | mat|>sapply(is.integer)] |> colnames()
+mat$reason |> unique()
 mat[sapply(mat, is.character)] <- lapply(mat[sapply(mat, is.character)],
                                        as.factor)
 y <- c('absences')
@@ -112,8 +152,21 @@ x <- c('school','sex','age','famsize','famsize','Medu','Fedu','reason','guardian
        'Dalc')
 ##  exploratoria ############################
 
+str(mat)
 
-
+mat |> ggplot() +
+  aes(x = absences, y = internet) +
+  geom_boxplot(fill = "darkblue") +
+  theme_minimal()
+mat |> ggplot() +
+  aes(x = absences, y = internet) +
+  geom_boxplot(fill = "darkblue") +
+  theme_minimal() + facet_wrap(vars(sex))
+ggplot(mat) +
+  aes(x = internet, weight = absences) +
+  geom_bar(fill = "#112446") +
+  theme_minimal() +
+  facet_wrap(vars(sex))
 mat |> ggplot() +
     aes(school, fill = school) + geom_bar(show.legend = F) + facet_wrap(vars(sex))
 
@@ -121,13 +174,24 @@ mat |> ggplot() +
   aes(age) + geom_bar() + facet_wrap(vars(failures))
 
 mat |> ggplot() +
-  aes(y, fill =guardian) + geom_bar(position = 'dodge')
+  aes(guardian, weight =absences) + geom_bar(position = 'dodge')
+
 mat |> ggplot() +
   aes(guardian) + geom_bar()
-mat[,y] |> max()
+mat |> ggplot() +
+  aes(x = absences, y = guardian) +
+  geom_boxplot(fill = "darkblue") +
+  theme_minimal()
+mat |> ggplot() +
+  aes(x = reason, fill = absences) +
+  geom_bar() +
+  scale_fill_gradient() +
+  theme_minimal()
 
-mat <- mat[,c(x,y)]
+ mat |> ggplot() +
+  aes(absences, fill =school) + geom_bar(position = 'dodge')
 
+table(mat$school) # NAO SEI SE VALE A PENA INCLUIR ESCOLA POR CAUDA DA DIFERENCA DE OBSERVACOES PRA CADA UMA
 ### selecao de variaveis pelo step ###############################
 glm(absences ~. ,mat, family='poisson') |> step(direction = 'backward')
 
@@ -158,4 +222,17 @@ fit3 |> summary()
 fit3.inter <- glm.nb(absences ~ (school + sex + age + Medu + reason +
                  internet + famrel + Dalc)^2, data = mat, init.theta = 0.7000362531,
                link = log)
-fit3 |> envelope.bn()
+fit3.inter |> summary()
+fit4 <- glm.nb(absences ~ school + sex + age + Medu + reason +
+                 internet  + Dalc, data = mat, init.theta = 0.7000362531,
+               link = log)
+fit4 |> summary()
+anova(fit4,fit3,test = 'LR')
+
+fit5 <-  glm.nb(absences ~   sex + age + Medu + reason +
+                  internet  + Dalc, data = mat, init.theta = 0.7000362531,
+                link = log)
+fit5 |> summary()
+anova(fit5,fit4)
+diagnostico.bn(fit4)
+
