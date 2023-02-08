@@ -44,7 +44,7 @@ qqnorm(e2,axes=F,xlab="",ylab="", type="l",ylim=faixa,lty=1)
 par(new=T)
 qqnorm(med,axes=F,xlab="", ylab="", type="l",ylim=faixa,lty=2) }
 envelope.bn <- function(fit.model){
-  par(mfrow=c(1,1))
+  # par(mfrow=c(1,1))
   X <- model.matrix(fit.model)
   n <- nrow(X)
   p <- ncol(X)
@@ -111,14 +111,14 @@ diagnostico.bn <- function(fit.model){
   title(sub="(a)")
   #
   plot(di,xlab="Indice", ylab="Distancia de Cook", pch=16)
-  identify(di,n=3)
+  identify(di,n=5)
   title(sub="(b)")
   #
   plot(td,xlab="Indice", ylab="Residuo Componente do Desvio",
        ylim=c(b-1,a+1), pch=16)
   abline(2,0,lty=2)
   abline(-2,0,lty=2)
-  identify(td,n=1)
+  identify(td,n=3)
   title(sub="(c)")
   #
   eta = predict(fit.model)
@@ -138,7 +138,6 @@ library(ggplot2)
 ##############################################
 
 mat <- read.csv('dados/Maths.csv')
-pot <- read.csv('dados/Portuguese.csv')
 # selecao manual de variaveis #################
 mat |> summary()
 mat |> colnames()
@@ -146,10 +145,18 @@ mat[,mat |> sapply(is.character) | mat|>sapply(is.integer)] |> colnames()
 mat$reason |> unique()
 mat[sapply(mat, is.character)] <- lapply(mat[sapply(mat, is.character)],
                                        as.factor)
+
 y <- c('absences')
 x <- c('school','sex','age','famsize','famsize','Medu','Fedu','reason','guardian','traveltime',
        'failures','schoolsup','famsup','activities','higher','internet','romantic','famrel','freetime','goout',
        'Dalc')
+mat <- mat[,c(x,y)]
+mat[,'Dalc'] <- mat$Dalc |> as.character()
+mat[mat$Dalc >3,'Dalc'] <- 'high'
+mat[mat$Dalc <=3,'Dalc'] <- 'low'
+str(mat)
+cols <- c('famrel','freetime','goout','Dalc','Medu','Fedu')
+mat[,cols] <- lapply(mat[,cols],as.factor)
 ##  exploratoria ############################
 
 str(mat)
@@ -159,9 +166,13 @@ mat |> ggplot() +
   geom_boxplot(fill = "darkblue") +
   theme_minimal()
 mat |> ggplot() +
+  aes(x = Medu) +
+  geom_boxplot(fill = "darkblue") +
+  theme_minimal()
+mat |> ggplot() +
   aes(x = absences, y = internet) +
   geom_boxplot(fill = "darkblue") +
-  theme_minimal() + facet_wrap(vars(sex))
+   facet_wrap(vars(sex))
 ggplot(mat) +
   aes(x = internet, weight = absences) +
   geom_bar(fill = "#112446") +
@@ -174,7 +185,7 @@ mat |> ggplot() +
   aes(age) + geom_bar() + facet_wrap(vars(failures))
 
 mat |> ggplot() +
-  aes(guardian, weight =absences) + geom_bar(position = 'dodge')
+  aes(guardian, weight =absences, fill = guardian) + geom_bar(show.legend = F) + facet_wrap(vars(internet))
 
 mat |> ggplot() +
   aes(guardian) + geom_bar()
@@ -189,7 +200,8 @@ mat |> ggplot() +
   theme_minimal()
 
  mat |> ggplot() +
-  aes(absences, fill =school) + geom_bar(position = 'dodge')
+  aes(school) + geom_bar(fill ='#112350') +
+   ggtitle( 'Frequencia por Escola')
 
 table(mat$school) # NAO SEI SE VALE A PENA INCLUIR ESCOLA POR CAUDA DA DIFERENCA DE OBSERVACOES PRA CADA UMA
 ### selecao de variaveis pelo step ###############################
@@ -204,6 +216,7 @@ envelope.poi(fit1)
 
 ######### modelo binomial negativo #############################
 library(MASS)
+str(mat)
 fit2 <- glm.nb(formula = absences ~ school + sex + age + famsize + Medu +
       reason + guardian + traveltime + schoolsup + higher + internet +
       romantic + famrel + freetime + Dalc,
@@ -236,3 +249,50 @@ fit5 |> summary()
 anova(fit5,fit4)
 diagnostico.bn(fit4)
 
+fit4.int   <- glm.nb(absences ~ (school + sex + age + Medu + reason +
+                              internet  + Dalc)^2, data = mat, init.theta = 0.7000362531,
+                            link = log)
+fit4.int |> summary()
+
+fit4.int   <- glm.nb(absences ~ school + sex + age + Medu + reason +
+                            internet  + Dalc + age*internet, data = mat, init.theta = 0.7000362531,
+                            link = log)
+fit4.int |> summary()
+
+anova(fit4,fit4.int,test = 'Chisq')
+
+fit5 <- glm.nb(absences ~ school + sex  + Medu + reason +
+                   Dalc + age:internet, data = mat, init.theta = 0.7000362531,
+               link = log)
+fit5 |> summary()
+fit4 |> summary()
+fit5 |> diagnostico.bn()
+par(mfrow = c(1,2))
+fit5 |> envelope.bn()
+fit4 |> envelope.bn()
+anova(fit4,fit5,test = 'Chisq')
+fit6 <- glm.nb(absences ~  sex  + Medu + reason +
+                 Dalc + age:internet, data = mat, init.theta = 0.7000362531,
+               link = log)
+fit7 <- glm.nb(absences ~  sex  + Medu + reason + freetime +
+                 Dalc + age:internet, data = mat, init.theta = 0.7000362531,
+               link = log)
+fit6 |> summary()
+fit8 <- glm.nb(absences ~    reason + school +
+                 Dalc + age*internet, data = mat, init.theta = 0.7000362531,
+               link = log)
+fit9<- glm.nb(absences ~ (reason + school+ Dalc + age + internet)^2, data = mat)
+fit6 |> envelope.bn()
+  anova(fit8,fit6,test = 'Chisq')
+fit6 |> summary()
+  fit8 |> summary()
+fit8 |> envelope.bn()
+fit8 |> diagnostico.bn()
+fit9 |> summary()
+outliers <- c(248,307,385,391,75,184,277,391,374,75,184,277) |> unique()
+outliers
+mat[outliers,c('reason','school','Dalc','age','internet','absences')]
+mat2 <- mat[-c(75,184,277),]
+glm.nb(absences ~    reason + school +
+         Dalc + age*internet, data = mat, init.theta = 0.7000362531,
+       link = log) |> envelope.bn()

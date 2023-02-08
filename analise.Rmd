@@ -3,7 +3,7 @@ title: "Investigando as causas de ausências em escolas de ensino médio: Uma an
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 author: 
  - Samuel M. Medeiros^[Universidade Federal do Espírito Santo, samuel.medeiros@edu.ufes.br]
-abstract: Este trabalho apresenta uma investigação sobre as causas de ausências em escolas de ensino médio em Portugal. A presença regular dos alunos nas aulas é fundamental para o sucesso acadêmico e o desenvolvimento pessoal. Portanto, é importante identificar as causas que levam a estas ausências. Para fazer isso, é apresentado um modelo de regressão Binomial Negativo para examinar a relação entre as características domésticas e pessoais dos alunos e suas faltas às aulas. Este modelo permitiu que fosse avaliado a influência dessas características na frequência dos alunos nas aulas e identificassem possíveis soluções para melhorar a presença dos estudantes. 
+abstract: Este trabalho apresenta uma investigação sobre as causas de ausências em escolas de ensino médio em Portugal. A presença regular dos alunos nas aulas é fundamental para o sucesso acadêmico e o desenvolvimento pessoal. Portanto, é importante identificar as causas que levam a estas ausências. Para fazer isso, é apresentado um modelo para dados de contagem a fim de examinar a relação entre as características domésticas e pessoais dos alunos e suas faltas às aulas. Este modelo permitiu que fosse avaliado a influência dessas características na frequência dos alunos nas aulas e identificassem possíveis soluções para melhorar a presença dos estudantes. 
 output:
   pdf_document: default
 lang: pt
@@ -16,46 +16,13 @@ knitr::opts_chunk$set(echo = TRUE, fig.width = 8, fig.height = 5)
 
 # Introdução
 
-A presença regular dos alunos nas aulas é fundamental para o sucesso acadêmico e o desenvolvimento pessoal. No entanto, ausências frequentes podem prejudicar o aprendizado e o desempenho escolar. É importante, portanto, identificar as causas dessas ausências e encontrar soluções para minimizá-las.
+Este trabalho se baseia em uma pesquisa original que tenta estabelecer uma relação entre o consumo de álcool e as notas baixas dos estudantes [@cortez2008using], foram utilizados modelos com tarefas de classificação binária/politômica e regressão.
 
-Nesse sentido, este trabalho se propõe a investigar as causas de ausências em escolas de ensino médio de Portugal. Será utilizado o modelo de regressão Binomial Negativo para relacionar características domésticas e pessoais dos alunos com suas faltas às aulas. A análise dos resultados permitirá avaliar a influência dessas características na frequência dos alunos nas aulas e identificar possíveis soluções para melhorar a presença dos estudantes.
-
-Este trabalho se baseia em uma pesquisa original que tenta estabelecer uma relação entre o consumo de álcool e as notas baixas dos estudantes [@cortez2008using], foram utilizados modelos com tarefas de classificação binária/cinco níveis e regressão.
-
-Este estudo apresenta uma metodologia baseada em modelos de regressão generalizados que se adequa ao escopo do assunto em questão e fornece uma contribuição significativa para a compreensão das causas de ausência nas escolas de ensino médio, apresentando resultados importantes para entender dinâmicas sociais quanto a relação aluno escola na atualidade.
-
-# Metodologia
-
-## Modelo
-
-O modelo de regressão binomial negativo é um tipo de modelo de regressão que é usado para prever uma variável inteira variando de 0 a infinito, ou seja, uma variável que pode ter apenas valores como contagem (por exemplo, número de biscoitos em um pacote, ou número de sucessos ou falhas em um evento, etc.). Nesse modelo, a probabilidade de ocorrência da variável é relacionada a uma ou mais variáveis independentes através de uma função matemática.
-
-No caso de uma única variável independente, a função matemática é geralmente a função logística, que mapeia a entrada da variável independente em uma probabilidade entre 0 e 1. No caso de várias variáveis independentes, o modelo de regressão binomial negativo pode ser implementado como uma regressão logística múltipla.
-
-A função da regressão binomial negativa é dada por:
-
-$$ \text{log}(y_i) = \beta_0 + \beta_1 x_{1,i} + \beta_2 x_{2,i} + \cdots + \beta_k x_{k,i} $$
-
-onde $y_i$ é a resposta observada a ser estudada, $x_{j,i}$ é a j-ésima variável explicativa e $\beta_j$ são os parâmetros do modelo a serem estimados. A função densidade da Binomial Negativa é dada por:
-
-$$f(y_i|\mu_i,\phi) = \frac{\Gamma(\phi + y_i)}{\Gamma(\phi)\Gamma(y_i+1)}\left(\frac{\mu_i}{\phi+\mu_i}\right)^{y_i}\left(\frac{\phi}{\phi+\mu_i}\right)^{\phi}, \quad y_i = 0,1,2,..$$
-Onde $y_i$ representa o número de faltas para cada aluno.
-
-## Seleção de Variáveis
-
-A análise dos dados originais foi revisada com o objetivo de selecionar as variáveis mais relevantes para explicar o número de faltas. Esta seleção foi baseada em conhecimentos prévios sobre o assunto e levou em consideração a importância de cada variável para a explicação do fenômeno estudado.
-
-A partir desse subconjunto foi utilizado o método backward. O método de seleção de variáveis backward, também conhecido como eliminação backwards, é uma técnica de seleção de variáveis que começa com todas as variáveis potenciais incluídas no modelo e, aos poucos, remove as variáveis menos importantes. O processo é repetido até que apenas as variáveis mais significativas estejam presentes no modelo. A critério para a eliminação de uma variável pode ser baseada em estatísticas, como o p-valor, ou em outras métricas de desempenho do modelo, como o erro de predição ou o coeficiente de determinação. O método de seleção de variáveis backward é útil quando há uma grande quantidade de variáveis disponíveis e se deseja reduzir o número de variáveis sem sacrificar a capacidade de explicar a variável resposta.
-
-Considerando o novo conjunto então seleção a partir de comparação de modelos resultou em um número ainda menor de variáveis selecionadas, sendo essas apresentadas na sessão seguinte, Banco de Dados.
+Este estudo utiliza uma metodologia baseada em modelos lineares generalizados de contagem que se adequa ao escopo do assunto em questão e fornece uma contribuição significativa para a compreensão das causas de ausência nas escolas de ensino médio, apresentando resultados importantes para entender dinâmicas sociais quanto a relação aluno escola na atualidade.
 
 # Banco de Dados
 
-## Variáveis selecionadas
-
-Com base em um banco de dados obtido na plataforma Kaggle sobre o consumo de álcool entre estudantes e suas respectivas notas em matemática e português, este estudo foi realizado para compreender a relação entre as características pessoais e sociais dos alunos e o número de faltas em um ano (Variável do tipo numérica inteiro), O banco de dados está disponível no [repositório](https://github.com/SammyMar/MLG) do *GitHub* para este trabalho.
-
-Propondo um modelo com as faltas como variável resposta, a partir de conhecimentos prévios e de métodos de seleção de variáveis discutidos na seção *Metodologia*, tentamos explicar a variável dependente através das variáveis independentes selecionadas, fazendo uma filtragem em relação as variáveis originais nos resta então as apresentadas na Tabela 1.
+Com base em um banco de dados obtido na plataforma Kaggle sobre o consumo de álcool entre estudantes e suas respectivas notas em matemática e português, este estudo foi realizado para compreender a relação entre as características pessoais e sociais dos alunos e o número de faltas em um ano (Variável do tipo numérica inteiro), O banco de dados está disponível no [repositório](https://github.com/SammyMar/MLG) do *GitHub* para este trabalho. Devido ao alto número de variáveis explicativas, se comparado ao número de observações, uma seleção a *priori* foi necessária. As variáveis utilizadas podem ser verificadas na Tabela 1, onde é apresentado também a indicação para o tipo de variável bem como sua indicação no banco de dados originais.
 
 ```{r, echo = FALSE}
 xx <- c('school','sex','reason','Dalc','age','internet')
@@ -71,7 +38,9 @@ knitr::kable(tabela,
 
 ## Exploratória dos dados selecionados
 
-É possível observar pela Tabela 1 que os dados são majoritariamente categóricos, podemos observar pela Tabela 2 como se dá a frequência de cada uma das categorias para cada uma das variáveis categóricas.  Podemos identificar para algumas variáveis que temos uma concentração maior de dados, como a categoria "Mãe" para a variável "Reason".
+É possível observar pela Tabela 1 que os dados são majoritariamente categóricos, podemos observar pela Tabela 2 como se dá a frequência de cada uma das categorias para cada uma das covariáveis em estudo.
+
+Para uma melhor adequação do modelo e uma maior explicabilidade de forma geral, uma recategorização da variável 'Dalc', nível de consumo de álcool, originalmente dividia em: muito baixo(1), baixo(2), moderado(3),alto(4) e muito alto(5), devido à baixa presença de observações para as categorias moderado, com 0.07 dos dados totais, alto, com 0.02 dos dados totais e muito alto, com 0.02 dos dados totais. O reagrupamento foi realizado considerando variáveis com 'Dalc' igual ou superior a 3 (Nível de consumo moderado) como a nova categoria 'high' e observações com nível de consumo de alcool inferior a 3 como 'low'. As novas categorias podem ser observadas na Tabela 2.
 
 ```{r include=FALSE}
 library(ggcorrplot)
@@ -90,204 +59,90 @@ mat <- mat[,c(x,y)]
 mat[,'Dalc'] <- mat$Dalc |> as.character()
 mat[mat$Dalc >3,'Dalc'] <- 'high'
 mat[mat$Dalc <=3,'Dalc'] <- 'low'
-str(mat)
 cols <- c('famrel','freetime','goout','Dalc','Medu','Fedu')
 mat[,cols] <- lapply(mat[,cols],as.factor)
 ```
-  
+
 ```{r echo=FALSE}
-x1 <- c(xx[1],'',xx[2],'',xx[3],'','','',xx[4],'','','','',xx[6],'')
-x2<- c(levels(unique(mat[,xx[1]])),levels(unique(mat[,xx[2]])),as.vector(sort(unique(mat[,xx[3]]))),1,2,3,4,5,levels(unique(mat[,xx[6]])))
+x1 <- c(xx[1],'',xx[2],'',xx[3],'','','',xx[4],'',xx[6],'')
+x2<- c(levels(unique(mat[,xx[1]])),levels(unique(mat[,xx[2]])),as.vector(sort(unique(mat[,xx[3]]))),'low','high',levels(unique(mat[,xx[6]])))
 x3 <- c(349,46,208,187,145,109,36,105,
-        276,75,26,9,9,66,329)
+        276+75,26+9+9,66,329)
 x4 <- c(349/(349+46),46/(349+46),
         208/(208 + 187),187/(208 + 187),
         145/(145+109+36+105),109/(145+109+36+105),36/(145+109+36+105),105/(145+109+36+105),
-        276/(276+75+26+9+9),75/(276+75+26+9+9),26/(276+75+26+9+9),9/(276+75+26+9+9),9/(276+75+26+9+9),
+        (276+75)/(276+75+26+9+9),(26+9+9)/(276+75+26+9+9),
         66/(66+329),329/(66+329)
         ) |> round(2)
 x5 <- c('Gabriel Pereira','Mousinho da Silveira','Mulher','Homem',
-        'Perto de casa','Reputacao','Preferencia de curso','Outro',
-        'muito baixo','baixo','moderado','alto','muito alto','Sim','Nao')
-length(x1)
+        'Preferencia de curso','Perto de casa','Outro','Reputacao',
+        'baixo','alto','Sim','Nao')
 tabela <- cbind(x1,x2,x5,x3,x4)
 colnames(tabela) <- c('Variavel','Codigo','Categoria','Frequencia','Proporcao')
 tabela |> knitr::kable(caption = 'Tabela de frequencia de categorias por variavel')
 ```
 
+Nota-se que o número de observações para as duas escolas é bem discrepante, ou seja, um número muito inferior de observações da escola 'MS', ou Mousinho da Silveis, em relação a escola Gabriel Pereira (GP).
 
-Nota-se que o número de observações para as duas escolas é bem discrepante, ou seja, um número muito inferior de observações da escola 'MS', ou Mousinho da Silveis, em relação a escola Gabriel Pereira (GP). Levando esse fato em consideração, dois modelos foram analisados, com e sem a variável 'School', sendo o resultado dos dois modelos apresentados no trabalho. Observe a afirmação na Tabela 2.
-
-
-A Figura 2 mostra a distribuição de faltas em relação à variável acesso a internet, e pode ser visto que a tendência é semelhante para ambas as classificações. A maior porcentagem de dados se concentra em casos onde o responsável pelo aluno é a mãe, enquanto há uma distribuição mais equilibrada para quando o responsável é o pai ou outra pessoa. No entanto, ao considerarmos a quantidade de dados disponíveis, 68% dos dados da variável "responsável" são classificados como "mãe", o que justifica o comportamento observado. Podemos observar tambem que a variável sexo não interfere tanto na distribuição da variável uso de internet e número de faltas.
-
-```{r, fig.cap = 'Número total de faltas por responsável e acesso a internet.',echo = FALSE, out.width = "100%"}
-g2 <- mat |> ggplot() +
-  aes(guardian, weight =absences, fill = guardian) + geom_bar(show.legend = F) + facet_wrap(vars(internet))
+```{r, fig.cap = 'Número total de faltas por categoria de cada covariável',echo = FALSE, out.width = "80%",fig.align = 'center'}
 g1 <- mat |> ggplot() +
+  aes(x = absences, y = school) +
+  geom_boxplot() 
+g2 <- mat |> ggplot() +
+  aes(x = absences, y = sex) +
+  geom_boxplot() 
+g3 <-mat |> ggplot() +
+  aes(x = absences, y = reason) +
+  geom_boxplot() 
+g4 <-mat |> ggplot() +
+  aes(x = absences, y = Dalc) +
+  geom_boxplot() 
+g5<- mat |> ggplot() +
   aes(x = absences, y = internet) +
-  geom_boxplot(fill = "darkblue") +
-   facet_wrap(vars(sex))
-ggpubr::ggarrange(g1,g2)
+  geom_boxplot() 
+g6 <- mat |> ggplot()+
+  aes(x = age) +
+  geom_boxplot()
+ggpubr::ggarrange(g1,g2,g3,g4,g5,g6)
 ```
 
-É possível olha a distribuição de faltas absoluta na Figura 2, onde identificamos a presença de possíveis três ou quatro outliers, apresentados na Tabela 3, onde identificamos um possível padrão de sexo, escola e acesso a internet, porém como já discutido o fator escola se dá pela quantidade de dados apresentados para a categoria em questão.
+Podemos entender melhor o comportamento do número de faltas ao observar a Figura 1, onde é identificável um grande volume de observações para alunos com nenhuma falta no ano letivo, e algumas poucas observações, *outliers* possivelmente, para alunos com mais de 40 faltas totais no ano letivo. É possível identificar pela Figura 2, ao analisar a frequência de faltas por categoria para cada uma das covariáveis, o perfil dos dados citados como possíveis *outliers*. É possível identificar uma maior variabilidade para categoria baixo consumo de álcool durante a semana bem como para a aquelas observações onde a razão para escolha do colégio foi a localidade. Como esperado em consequência do tipo de amostra em estudo, alunos de ensino médio, a distribuição de idade se concentra principalmente entre 16 e 18 anos, com alguns ainda entre 18 e 20.
 
-```{r, fig.cap='Frequencia de faltas',echo=FALSE}
-mat |> ggplot() +
+```{r,fig.cap = 'Número total de faltas por acesso a internet para cada idade',echo = FALSE, out.width = "80%",fig.align = 'center'}
+ggplot(mat) +
+  aes(x = absences, y = internet) +
+  geom_boxplot() +
+  facet_wrap(vars(age))
+```
+
+Podemos, pela Figura 3, previamente indicios ou não de alguma relação entre a interação das covariáveis idade e uso de internet na resposta número de faltas. Note que, o comportamento para idades como 15 e 20, por mais que falte observações o suficiente é possível identificar um comportamento diferente das outras categorias, que possuem uma maior variabilidade quando o aluno tem acesso a internet no domicílio, possuindo também números de faltas mais elevados quando possuem o acesso.
+
+```{r, fig.cap = 'Frequência de número de faltas',echo = FALSE, out.width = "60%",fig.align = 'center'}
+ mat |> ggplot() +
   aes(x = absences) +
-  geom_bar(fill = "darkblue")
-```
-```{r, echo = FALSE}
-aux <- mat[mat$absences > 50,xx]
-aux |> knitr::kable(caption = 'Possiveis Outliers')
+  geom_bar() 
+
 ```
 
 # Aplicação do modelo
 
-A análise dos dados realizada na sessão anterior permitiu identificar o impacto de cada variável em relação ao número de faltas dos estudantes. Para isso, foram utilizados dois modelos diferentes: o primeiro analisou o efeito puro de cada variável, sem considerar suas interações, enquanto o segundo modelo considerou o efeito combinado de todas as variáveis.
 
-Ao avaliar o modelo completo, foram realizadas análises ANOVA e testes de valor-p para identificar as covariáveis mais relevantes. O resultado apontou que a variável sexo  não possui um impacto significativo na quantidade de faltas dos estudantes, hipótese essa testada pela razão de verossimilhança. Dessa forma, a variável sexo  não foi mantida no modelo final.
 
-Além disso, ao comparar o modelo inteirativo com o modelo de efeito puro, pode-se perceber que a inclusão da interação idade e acesso a internet agregou informações ao modelo, tornando-o mais preciso. Esse resultado indica que a combinação entre a idade do estudante e o acesso à internet exercem uma influência relevante sobre a variável resposta, ou seja, a quantidade de faltas.
-
-Com essa alteração o efeito puro das duas variáveis em questão se torna pouco significativo para o modelo, tendo um deviance Nulo parecido para ambos os dois modelos. Em deterimento disso o modelo com interação foi o selecionado como mais adequado a explicação dos dados.
-
-Outro importante resultado vem da variável "Dalc" consumo de alcool. Foi identificado que apenas um dos fatores era significante, logo, uma alternativa razoável foi a alteração de 5 níveis de fator para apenas 2, "high"- alto consumo de alcool e "low"- baixo consumo de alcool. A variável 'Medu', grau de estudo da Mãe, teve que ser retirada do banco de dados devido a incapacidade de inversão da matriz de covariáveis com a presença da covariável.
-
-Por fim, é importante destacar que a seleção de variáveis é um passo crucial na modelagem de dados, pois permite identificar quais variáveis são realmente relevantes para explicar o fenômeno em questão. Onde obtivemos o modelo a seguir:
+Dentro da literatura, buscamos o modelo mais parcimonioso, ou seja, aquele que consegue uma boa explicabilidade de maneira mais simples possível. Considerando a variável de interesse no estudo como sendo número de ocorrência de determinado evento em função de certas características e/ou situações, a categoria de modelos mais adequada no caso são os log-lineares. No caso em estudo, número de faltas, as quais serão modeladas utilizando o modelo mais básico, modelo de Poisson, assumindo sua ligação canônica *log*. Denotando $Y_{i}$ como número de ausências para o aluno dada as i-ésimas características . Supondo $Y_{i}$ como sendo uma variável de distribuição Poisson($\mu_{i}$) em que $\mu$ representa a taxa média de faltas para o indivíduo com as características citadas. Dada as definições é estabelecido então o modelo:
 
 $$
-log(Absences) = \beta_0 +  \beta_1Reason_h + \beta_2Reason_o + \beta_3Reason_r + \beta_4Dalc_low + \beta_5Age:Internet_n + \beta_6 Age:Internet_s
-$$
-As estimativas para cada um dos $\beta_i$ bem como os desvios, níveis de significancia e Deviânce do modelo podem ser observados abaixo.
+\begin{split}
+  log(\mu_i) = \alpha + \beta_1DalcH_i + \beta_2Age_i + \beta_3SexF_i + \beta_4SchoolM_i +\\ \beta_5InternetN_i + \beta_6ReasonH_i + \beta_7ReasonO_i + \beta_8ReasonR_i
+\end{split}
+$$ \## Modelo ajustado
 
-```{r,echo = FALSE}
-fit2 <- glm.nb(absences ~  reason  + school   +
-                 Dalc + age:internet, data = mat,
-               link = log)
-fit2 |> summary()
+Utilizando-se do modelo descrito, é perceptível pela Figura 4, o gráfico envelope, que o modelo Poisson não é o adequado para modelagem do banco de dados. Em virtude da péssima qualidade de ajusta vista, uma proposta que consiga lidar melhor com a sobredisperssão é necessário para o estudo.
 
-```
+```{r, echo = FALSE,fig.align='center',fig.cap='Envelope para o modelo Poisson',out.width="80%"}
+fitpoi <- glm(absences ~ Dalc + age + sex + school + internet +
+                   reason,data = mat, family = poisson)
 
-
-Apresentando um deviance final de 449.31 para 384 graus de liberdade.
-
-## Resultados e Diagnóstico
-
-A escolha pelo modelo de regressão binomial negativo foi baseada na sua adequação para o conjunto de dados em questão. Essa adequação foi verificada pela análise da Figura 3, que mostrou que a função de ligação parece estar correta para o banco de dados. Além disso, a análise dos diagnósticos do modelo (Figura 4) permitiu identificar a presença de 3 outliers, que foram mencionados previamente na análise exploratória dos dados. Além disso, a Figura 4 também permite verificar a adequação do modelo, bem como a suposição de linearidade para a variável resposta.
-
-```{r, echo=FALSE, fig.cap='Envelope do modelo binomial negativo'}
-fit.model <-fit2
-
-par(mfrow=c(1,1))
-X <- model.matrix(fit.model)
-n <- nrow(X)
-p <- ncol(X)
-fi <- fit.model$theta
-w <- fi*fitted(fit.model)/(fi + fitted(fit.model))
-W <- diag(w)
-H <- solve(t(X)%*%W%*%X)
-H <- sqrt(W)%*%X%*%H%*%t(X)%*%sqrt(W)
-h <- diag(H)
-td <- resid(fit.model,type="deviance")/sqrt(1-h)
-fi <- fit.model$theta
-e <- matrix(0,n,100)
-#
-
-for(i in 1:100){
-resp <- rnegbin(n, fitted(fit.model),fi)
-fit <- glm.nb(resp ~ X, control = glm.control(maxit = 50))
-w <- fit$weights
-W <- diag(w)
-H <- solve(t(X)%*%W%*%X)
-H <- sqrt(W)%*%X%*%H%*%t(X)%*%sqrt(W)
-h <- diag(H)
-e[,i] <- sort(resid(fit,type="deviance")/sqrt(1-h))
-
-}
-#
-e1 <- numeric(n)
-e2 <- numeric(n)
-#
-for(i in 1:n){
-  eo <- sort(e[i,])
-e1[i] <- (eo[2]+eo[3])/2
-e2[i] <- (eo[97]+eo[98])/2}
-#
-med <- apply(e,1,mean)
-faixa <- range(td,e1,e2)
-par(pty="s")
-qqnorm(td,xlab="Percentil da N(0,1)",
-ylab="Componente do Desvio", ylim=faixa, pch=16)
-par(new=T)
-#
-qqnorm(e1,axes=F,xlab="",ylab="",type="l",ylim=faixa,lty=1)
-par(new=T)
-qqnorm(e2,axes=F,xlab="",ylab="", type="l",ylim=faixa,lty=1)
-par(new=T)
-qqnorm(med,axes=F,xlab="", ylab="", type="l",ylim=faixa,lty=2)
-```
-
-```{r, echo=FALSE, fig.cap='Diagnostico do modelo'}
- X <- model.matrix(fit.model)
-  n <- nrow(X)
-  p <- ncol(X)
-  fi <- fit.model$theta
-  w <- fi*fitted(fit.model)/(fi + fitted(fit.model))
-  W <- diag(w)
-  H <- solve(t(X)%*%W%*%X)
-  H <- sqrt(W)%*%X%*%H%*%t(X)%*%sqrt(W)
-  h <- diag(H)
-  ts <- resid(fit.model,type="pearson")/sqrt(1-h)
-  td <- resid(fit.model,type="deviance")/sqrt(1-h)
-  di <- (h/(1-h))*(ts^2)
-  par(mfrow=c(2,2))
-  a <- max(td)
-  b <- min(td)
-  plot(fitted(fit.model),h,xlab="Valores Ajustados", ylab="Medida h",
-       pch=16)
-  #identify(fitted(fit.model), h, n=5)
-  title(sub="(a)")
-  #
-  plot(di,xlab="Indice", ylab="Distancia de Cook", pch=16)
-  #identify(di,n=3)
-  title(sub="(b)")
-  #
-  plot(td,xlab="Indice", ylab="Residuo Componente do Desvio",
-       ylim=c(b-1,a+1), pch=16)
-  abline(2,0,lty=2)
-  abline(-2,0,lty=2)
-  #identify(td,n=1)
-  title(sub="(c)")
-  #
-  eta = predict(fit.model)
-  z = eta + resid(fit.model, type="pearson")/sqrt(w)
-  plot(predict(fit.model),z,xlab="Preditor Linear",
-       ylab="Variavel z", pch=16)
-  lines(smooth.spline(predict(fit.model), z, df=2))
-  title(sub="(d)")
-```
-
-# Conclusões 
-
-A análise dos dados coletados aponta para uma relação positiva entre o número de faltas e o consumo de álcool. Alunos que apresentam um alto nível de consumo de álcool tendem a ter um número maior de faltas, o que também pode ser observado na comparação entre as escolas. Aqueles que estudam na escola "MS" tendem a ter um número menor de faltas, possivelmente devido à falta de dados iguais para as duas escolas.
-
-Neste contexto, iniciativas de prevenção ao uso excessivo de álcool nas escolas são uma alternativa eficaz para reduzir o número de faltas dos estudantes. Campanhas e ações de prevenção podem ser benéficas para educar os estudantes sobre os riscos e as consequências do consumo excessivo de álcool, além de ajudar a diminuir o número de faltas.
-
-Esse fato também é estudado e apresentado no trabalho citado como referência de estudo. A variável tempo livre fora da escola não se mostrou tão eficaz mas possívelmente seria capaz de descrever uma relação entre o consumo de alcool dos alunos. Um estudo em cima das motivações para a fuga e a embriagues excessíva são sugestões para estudo da melhor forma de combater essas ausências. Vemos também que alunos com acesso a internet tem uma tendência maior a números altos de faltas. Controle do acesso pelos pais são outras alternativas capazes de contornar melhor o problema.
-
-\appendix
-\renewcommand{\thesection}{A}
-# Appendix {-}
-
-## Códigos 
-```{r eval=FALSE, include=TRUE}
-############ funcoes #####################
-
-envelope.poi <- function(fit.model){
-par(mfrow=c(1,1))
-X <- model.matrix(fit.model)
+poi <- function(fit.model){X <- model.matrix(fit.model)
 n <- nrow(X)
 p <- ncol(X)
 w <- fit.model$weights
@@ -328,8 +183,74 @@ par(new=T)
 qqnorm(e2,axes=F,xlab="",ylab="", type="l",ylim=faixa,lty=1)
 par(new=T)
 qqnorm(med,axes=F,xlab="", ylab="", type="l",ylim=faixa,lty=2) }
-envelope.bn <- function(fit.model){
-  # par(mfrow=c(1,1))
+poi(fitpoi)
+```
+
+Com essas considerações então uma proposta de intervenção ao problema é a utilização do modelo Binomial Negativo para a variável. A abordagem é trabalhada na subsessão a seguir.
+
+## Modelo com resposta Binomial Negativa.
+
+Como proposta de modelo que se adequa melhor a sobredisperssão, ou a variância superior a resposta média, considere $Y_i$ variável aleatória de distribuição BN($\mu_i,\phi$), estimando também o parâmetro de dispersão. Para o caso de ligação canônica, aqui utilizado, sendo ele a ligação g(.) como logaritmica, definimos o modelo como sendo:
+
+$$
+\begin{split}
+ log(\mu_i) = \beta_0 + \beta_1DalcL_i+ \beta_2SexM_i + \beta_3Age_i  + \beta_4SchoolMS_i + \\ \beta_5ReasonH_i + \beta_6ReasonO_i + \beta_7ReasonR_i + \beta_8InternetY_i
+\end{split}
+$$
+
+Onde a resposta em estudo é a resposta média para número de faltas.
+
+### Seleção de Variáveis
+
+Um importante adendo para o estudo é a forma como se deu a seleção de variáveis para o trabalho. Uma pré seletiva foi realizada a fim de reduzir consideravelmente o número de covariáveis. O método *stepAIC* com esse subgrupo foi tido como auxiliar na seletiva, com uma segunda seleção manual realizada após sua aplicação utilizando testes qui-quadrado. Resultando no modelo acima citado. Vale comentar que a variável "Medu", nível de educação da mãe, foi tida como significante para o modelo, porém devido a problema de multicoliariedade com a covariável "Dalc" teve que ser retirada do grupo final.
+
+Ao testar a interação entre as covariáveis selecionadas arbitrariamente, nota-se que apenas a interação *age:internet* é significante a um nível $alpha$ de 0.1, com um p-valor de 0.0215. Ao realizar o teste de razão de verossimilhança é notado que a interação é significante a um p-valor de 0.05 somente a um nível $alpha$ de 0.01. A interação não foi mantida no modelo, considerando também queda baixa do AIC de 2168.1 para 2166.3 e a alteração do deviance de 449.63 a 386 graus de liberdade para 449.88 a 385 graus de liberdade, priorizando a parcimonia do modelo, apenas os efeitos únicos das covariáveis foram mantidos.
+
+```{r,include=FALSE}
+fit1 <- glm.nb(absences ~ Dalc + sex + age + school + reason + internet, data = mat)
+fit2 <- glm.nb(absences ~ (Dalc + sex + age + school + reason + internet)^2, data = mat)
+fit3 <- glm.nb(absences ~ Dalc + sex + school + reason  + internet*age, data = mat)
+fita <- glm.nb(formula = absences ~ Dalc  + age + school + reason + 
+    internet, data = mat, init.theta = 0.6792422502, link = log)
+```
+
+Ao avaliarmos a significância do modelo com a presença da covariável Sex, utilizando o teste de razão de verossimilhança a um $alpha$ de 0.05, supondo a hipótese nula de $\beta_{2} = 0$, não rejeitamos a hipótese nula a um p-valor de 0.12, como apresentado abaixo.
+
+```{r echo=FALSE, warning=FALSE}
+anova(fita,fit1,test = 'LRT')
+```
+
+Restando o modelo final :
+
+$$
+\begin{split}
+ log(\mu_i) = \beta_0 + \beta_1DalcL_i + \beta_2Age_i +  \beta_3SchoolMS_i +\\ \beta_4ReasonH_i + \beta_5ReasonO_i + \beta_6ReasonR_i + \beta_7InternetY_i
+\end{split}
+$$ 
+
+com os parâmetros estimados:
+
+|                  | Estimativa | Erro Padrão | valor z | Pr(\>\|z\|) |
+|------------------|------------|-------------|---------|-------------|
+| (Intercept)      | -1.9343    | 1.0159      | -1.904  | 0.05692     |
+| Dalclow          | -0.6355    | 0.3116      | -2.040  | 0.04140     |
+| age              | 0.2224     | 0.0554      | 4.015   | 5.95e-05    |
+| schoolMS         | -0.7075    | 0.2289      | -3.091  | 0.00200     |
+| reasonhome       | 0.5094     | 0.1655      | 3.077   | 0.00209     |
+| reasonother      | 0.2486     | 0.2467      | 1.008   | 0.31352     |
+| reasonreputation | 0.4555     | 0.1688      | 2.698   | 0.00698     |
+| internetyes      | 0.3295     | 0.1809      | 1.821   | 0.06862     |
+
+: Tabela de estimativas para o modelo final
+
+Com um deviance final de 449.27 a 387 graus de liberdade e um AIC de 2168.5.
+
+### Diagnóstico
+
+Considerando os modelos dentro do escópo da matéria, nota-se pela Figura 5 o ganho em explicabilidade do valor esperado de ausências para o modelo com resposta Binomial Negativa se comparado com o anteriormente aplicado modelo com resposta Poisson. Note que ainda sim temos alguns poucos valores fora das bandas de confiança do envelope do modelo. Esse fato provavelmente é fruto do grande número de zeros para variável resposta, mostrando a necessidade da aplicação de um modelo Binomial Negativo inflacionado. O mesmo não foi testado pois foge do conteúdo estudado no curso. Mas ainda sim vemos uma boa explicabilidade da representação do modelo utilizado.
+
+```{r, echo =FALSE, fig.cap='Envelope para modelo com resposta binomial comparado ao com resposta Poisson',out.width="80%",fig.align='center'}
+bine <- function(fit.model){
   X <- model.matrix(fit.model)
   n <- nrow(X)
   p <- ncol(X)
@@ -372,9 +293,16 @@ envelope.bn <- function(fit.model){
   par(new=T)
   qqnorm(e2,axes=F,xlab="",ylab="", type="l",ylim=faixa,lty=1)
   par(new=T)
-  qqnorm(med,axes=F,xlab="", ylab="", type="l",ylim=faixa,lty=2)
-}
-diagnostico.bn <- function(fit.model){
+  qqnorm(med,axes=F,xlab="", ylab="", type="l",ylim=faixa,lty=2)}
+par(mfrow = c(1,2))
+fitpoi |> poi()
+fita |> bine()
+```
+
+Levando em consideração esse perceptível ganho, o modelo de resposta binomial negativa foi tido como mais adequado. Observando a Figura 6, pode-se considerar, devido a lineariedade do preditor linear $\eta = X\underline{\beta}$, a ligação realizada, logaritmica, como adequada para descrever a relação da variável resposta aos dados. É possível perceber também os possíveis candidatos a pontos de alavanca, aberrantes e de influência do modelos pelos gráficos (a),(b) e (c) da Figura 6. Esses dados podem ser observados na Tabela 4.
+
+```{r, echo =FALSE, fig.cap='Diagnóstico para o modelo Binomial Negativo',fig.align='center',out.width="80%"}
+  fit.model <- fita
   X <- model.matrix(fit.model)
   n <- nrow(X)
   p <- ncol(X)
@@ -392,18 +320,18 @@ diagnostico.bn <- function(fit.model){
   b <- min(td)
   plot(fitted(fit.model),h,xlab="Valores Ajustados", ylab="Medida h",
        pch=16)
-  identify(fitted(fit.model), h, n=5)
+  #identify(fitted(fit.model), h, n=5)
   title(sub="(a)")
   #
   plot(di,xlab="Indice", ylab="Distancia de Cook", pch=16)
-  identify(di,n=3)
+  #identify(di,n=3)
   title(sub="(b)")
   #
   plot(td,xlab="Indice", ylab="Residuo Componente do Desvio",
        ylim=c(b-1,a+1), pch=16)
   abline(2,0,lty=2)
   abline(-2,0,lty=2)
-  identify(td,n=1)
+  #identify(td,n=1)
   title(sub="(c)")
   #
   eta = predict(fit.model)
@@ -412,169 +340,105 @@ diagnostico.bn <- function(fit.model){
        ylab="Variavel z", pch=16)
   lines(smooth.spline(predict(fit.model), z, df=2))
   title(sub="(d)")
-}
 
-########## IMPORTACAO E PACOTES ##############
+```
 
-library(corrplot)
-library(dplyr)
-library(ggplot2)
+```{r,echo = FALSE}
+out <- c(248,75,166,184,277,374,380,75,184,277,224) |> unique()
+mat[out,c('Dalc','sex','school','age','internet','reason','absences')] |> knitr::kable(caption= 'Dados outliers')
+```
 
-##############################################
+É possível reparar que os dados indicados, dentre eles, a observação 277,184 e 75 apresentam um alto número de faltas, valores incomuns se retomarmos a parte de análise descritiva. Uma forma de verificar o efeito da variável sobre o modelo é a remodelagem excluindo a observação em questão. Podemos observar os resultados para as estimativas dos parâmetros do modelo na Tabela 5 ao retirar cada uma das observações citadas na Tabela 4.
 
-mat <- read.csv('dados/Maths.csv')
-# selecao manual de variaveis #################
-mat |> summary()
-mat |> colnames()
-mat[,mat |> sapply(is.character) | mat|>sapply(is.integer)] |> colnames()
-mat$reason |> unique()
-mat[sapply(mat, is.character)] <- lapply(mat[sapply(mat, is.character)],
-                                       as.factor)
+```{r,echo = FALSE}
 
-y <- c('absences')
-x <- c('school','sex','age','famsize','famsize','Medu','Fedu','reason','guardian','traveltime',
-       'failures','schoolsup','famsup','activities','higher','internet','romantic','famrel','freetime','goout',
-       'Dalc')
-mat <- mat[,c(x,y)]
-mat[,'Dalc'] <- mat$Dalc |> as.character()
-mat[mat$Dalc >3,'Dalc'] <- 'high'
-mat[mat$Dalc <=3,'Dalc'] <- 'low'
-str(mat)
-cols <- c('famrel','freetime','goout','Dalc','Medu','Fedu')
-mat[,cols] <- lapply(mat[,cols],as.factor)
-##  exploratoria ############################
+parametros <- matrix(NA,ncol = 8) |> as.data.frame()
+parametros[1,] <- format(round((coef(fita)), digits = 2),  nsmall = 2)
+rownames(parametros)[1] <- 'Original'
+j = 2
+for(i in out){
+parametros[j,] <- format(round( glm.nb(formula = absences ~ Dalc  + age + school + reason + 
+    internet, data = mat[-i,], init.theta = 0.6792422502, link = log) |> coef(), digits = 2), nsmall = 2)
+rownames(parametros)[j] <- i
+j = j+ 1
+  }
+colnames(parametros) <- c('beta_0','beta_1','beta_2','beta_3','beta_4',
+                          'beta_5','beta_6','beta_7')
 
-str(mat)
+parametros |> knitr::kable(caption = 'Tabela de Estimativas retirando o valor átipico') 
+```
 
-mat |> ggplot() +
-  aes(x = absences, y = internet) +
-  geom_boxplot(fill = "darkblue") +
-  theme_minimal()
-mat |> ggplot() +
-  aes(x = Medu) +
-  geom_boxplot(fill = "darkblue") +
-  theme_minimal()
-mat |> ggplot() +
-  aes(x = absences, y = internet) +
-  geom_boxplot(fill = "darkblue") +
-   facet_wrap(vars(sex))
-ggplot(mat) +
-  aes(x = internet, weight = absences) +
-  geom_bar(fill = "#112446") +
-  theme_minimal() +
-  facet_wrap(vars(sex))
-mat |> ggplot() +
-    aes(school, fill = school) + geom_bar(show.legend = F) + facet_wrap(vars(sex))
+Não há presença de grandes alterações com excessão das observações 277 e 374, com a 277 se destacando de forma mais acentuada, em virtude do alto número de ausências por parte do aluno destacado.
 
-mat |> ggplot() +
-  aes(age) + geom_bar() + facet_wrap(vars(failures))
+Para esse modelo observamos os seguintes desvios padrão para esse modelo sem a observação 277:
 
-mat |> ggplot() +
-  aes(guardian, weight =absences, fill = guardian) + geom_bar(show.legend = F) + facet_wrap(vars(internet))
 
-mat |> ggplot() +
-  aes(guardian) + geom_bar()
-mat |> ggplot() +
-  aes(x = absences, y = guardian) +
-  geom_boxplot(fill = "darkblue") +
-  theme_minimal()
-mat |> ggplot() +
-  aes(x = reason, fill = absences) +
-  geom_bar() +
-  scale_fill_gradient() +
-  theme_minimal()
+|             |    Estimate |Std. Error |z value |Pr(>\|z\|)|    
+|-------------|------------|------------|-------|----------|
+|(Intercept)   |   -1.57208 |   1.00913 | -1.558 |0.119266|    
+|Dalclow        |  -0.65815|    0.30861 | -2.133 |0.032953| 
+|age             |  0.20237 |   0.05504 |  3.677 |0.000236| 
+|schoolMS        | -0.66455|    0.22707  |-2.927 |0.003426| 
+|reasonhome      |  0.44660 |   0.16464  | 2.713 |0.006674| 
+|reasonother     |  0.24492|    0.24433  | 1.002 |0.316135|    
+|reasonreputation | 0.46165 |   0.16722 |  2.761 |0.005767 | 
+|internetyes     |  0.31415|    0.17937|   1.751 |0.079870 | 
+: Estimativas dos parâmetros com exclusão da observação 277
 
- mat |> ggplot() +
-  aes(school) + geom_bar(fill ='#112350') +
-   ggtitle( 'Frequencia por Escola')
+Note porém que a ausência da observação não altera a significância de nenhum dos parâmetros estimados, todos os betas para as variáveis selecionadas permanecem informativas para o modelo. 
 
-table(mat$school) 
-# NAO SEI SE VALE A 
-#PENA INCLUIR ESCOLA POR CAUDA DA DIFERENCA
-#DE OBSERVACOES PRA CADA UMA
-### selecao de variaveis pelo step ###############################
-glm(absences ~. ,mat, family='poisson') |> step(direction = 'backward')
+##  Interpretações
 
-fit1 <- glm(formula = absences ~ school + sex + age + famsize + Medu +
-      reason + guardian + traveltime + schoolsup + higher + internet +
-      romantic + famrel + freetime + Dalc, family = "poisson",
-    data = mat)
+Para melhor compreensão do ajuste do modelo, é compararmos o valor esperado da mudança de uma categoria fixando as demais. Por exemplo, se queremos identificar a variação do valor esperado estimado de faltas se aumentarmos a idade em 1, basta fixar as demais covariáveis e resolver a equação:
 
-envelope.poi(fit1)
+$$
+\begin{split}
+\frac{\hat{\mu}(age + 1)}{\hat{\mu}(age)} = \frac{exp\{\beta_0 + \beta_1DalcL_i + \beta_2(age +1) +  \beta_3SchoolMS_i + \beta_4ReasonH_i + \beta_5ReasonO_i + \beta_6ReasonR_i + \beta_7InternetY_i\}}{exp\{\beta_0 + \beta_1DalcL_i + \beta_2(age) +  \beta_3SchoolMS_i + \beta_4ReasonH_i + \beta_5ReasonO_i + \beta_6ReasonR_i + \beta_7InternetY_i\}}
+\\
+= exp\{\beta_2age + \beta_2 - \beta_2 age\} = e^{\beta_2} \approx 1.246077
+\end{split}
+$$
+Ou seja, para cada unidade amais na covariável idade, temos um valor esperado de faltas 1.24 vezes maior. Pela Tabela 7 é possível ver o valor esperado para alguns perfis em específico, e para melhor compreender o comportamento quando comparado o efeito que a mudança de alguma categoria exerce sobre o valor esperado estimado, observe a Tabela 8, onde é apresentado a razão do valor esperando de determinadas variáveis fixando as demais.
 
-######### modelo binomial negativo #############################
-library(MASS)
-str(mat)
-fit2 <- glm.nb(formula = absences ~ school + sex + age + famsize + Medu +
-      reason + guardian + traveltime + schoolsup + higher + internet +
-      romantic + famrel + freetime + Dalc,
-    data = mat)
+```{r,echo =FALSE}
+age <- c(18,20)
+dalc <- c(0,1)
+school <- c(0,1)
+reasono <- c(0)
+internet <- c(0,1)
+reasonR <- c(0)
+reasonH <- c(0)
+aux <- expand.grid(age,dalc,school,reasonH,reasono,reasonR,internet)
+attach(aux)
+aux <- aux[Var4 + Var5 + Var6 <= 1,]
+aux$reason <- case_when(
+  aux$Var4 == 1 ~ 'Home',
+  aux$Var5 == 1 ~ 'Other',
+  aux$Var6 == 1 ~ 'Reputation',
+  TRUE ~  'course'
+)
+aux$Dalc <- case_when(
+  aux$Var2 == 1 ~ 'low',
+  TRUE ~ 'high'
+)
+aux$school <-  case_when(
+  aux$Var3 == 1 ~ 'MS',
+  TRUE ~ 'GP'
+)
+aux$internet <-  case_when(
+  aux$Var7 == 1 ~ 'yes',
+  TRUE ~ 'no'
+)
+aux$age <- aux$Var1
+aux1 <- aux[,8:12]
+for(i in 1:nrow(aux1)){
+aux1$mu[i] <- exp(sum(cbind(1,aux[i,1:7])*coef(fita)))}
+aux1$low.CI <- aux1$mu - 1.96*sqrt(var(aux1$mu))
+aux1$Up.CI <-  aux1$mu + 1.96*sqrt(var(aux1$mu))
+aux1 |> knitr::kable(caption = 'Valor esperado de faltas por perfil de aluno e intervalo de confiança para 0.95')
+```
 
-fit2 |> summary()
-
-glm.nb(absences ~ ., data = mat ) |> step(direction = 'backward')
-
-fit3 <- glm.nb(absences ~ school + sex + age + Medu + reason +
-         internet + famrel + Dalc, data = mat, 
-         init.theta = 0.7000362531,
-       link = log)
-
-fit3 |> summary()
-
-fit3.inter <- glm.nb(absences ~ (school + sex + age + Medu + reason +
-                 internet + famrel + Dalc)^2, data = mat,
-                 init.theta = 0.7000362531,
-               link = log)
-fit3.inter |> summary()
-fit4 <- glm.nb(absences ~ school + sex + age + Medu + reason +
-                 internet  + Dalc, data = mat, 
-               init.theta = 0.7000362531,
-               link = log)
-fit4 |> summary()
-anova(fit4,fit3,test = 'LR')
-
-fit5 <-  glm.nb(absences ~   sex + age + Medu + reason +
-                  internet  + Dalc, data = mat, 
-                init.theta = 0.7000362531,
-                link = log)
-fit5 |> summary()
-anova(fit5,fit4)
-
-fit4.int   <- glm.nb(absences ~ (school + sex + age + Medu + reason +
-                              internet  + Dalc)^2, data = mat, init.theta = 0.7000362531,
-                            link = log)
-fit4.int |> summary()
-
-fit4.int   <- glm.nb(absences ~ school + sex + age + Medu + reason +
-                            internet  + Dalc + age*internet, data = mat, 
-                     init.theta = 0.7000362531,
-                            link = log)
-fit4.int |> summary()                     
-
-anova(fit4,fit4.int,test = 'Chisq') 
-
-fit5 <- glm.nb(absences ~ school + sex  + Medu + reason + 
-                   Dalc + age:internet, data = mat, init.theta = 0.7000362531,
-               link = log)
-fit5 |> summary()
-fit4 |> summary()
-fit5 |> diagnostico.bn()
-par(mfrow = c(1,2))
-fit5 |> envelope.bn()
-fit4 |> envelope.bn()
-anova(fit4,fit5,test = 'Chisq')
-fit6 <- glm.nb(absences ~  sex  + Medu + reason +
-                 Dalc + age:internet, data = mat, init.theta = 0.7000362531,
-               link = log)
-fit7 <- glm.nb(absences ~  sex  + Medu + reason + freetime +
-                 Dalc + age:internet, data = mat, init.theta = 0.7000362531,
-               link = log)
-fit6 |> summary()
-fit8 <- glm.nb(absences ~    reason + school +
-                 Dalc + age:internet, data = mat, init.theta = 0.7000362531,
-               link = log)
-  anova(fit8,fit6,test = 'Chisq')
-fit8 |> summary()
+```{r,echo = FALSE}
 
 ```
 
